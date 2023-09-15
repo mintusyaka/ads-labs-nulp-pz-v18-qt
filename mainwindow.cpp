@@ -67,3 +67,9 @@ void MainWindow::on_IndividualTask_clicked()
     IndTask();
 }
 
+
+void MainWindow::on_generateButtonSteps_clicked()
+{
+    StepByStepSort();
+}
+

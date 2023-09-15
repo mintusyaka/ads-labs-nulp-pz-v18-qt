@@ -35,11 +35,15 @@ private slots:
 
     void on_IndividualTask_clicked();
 
+    void on_generateButtonSteps_clicked();
+
 private:
     Ui::MainWindow *ui;
 
     std::vector<int> intArray;
     std::vector<double> doubleArray;
+
+    int curPos {0};
 
     int curSize {0};
 
@@ -49,27 +53,37 @@ private:
 
     void AddRow() {
         ui->arrayView->setRowCount(1);
+        ui->arrayView_steps->setRowCount(1);
     }
 
     void AddElementToArr(int value) {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(value));
+        QTableWidgetItem *x2 = new QTableWidgetItem(QString::number(value));
 
         int _size { ui->arrayView->columnCount() };
         ui->arrayView->setColumnCount(_size + 1);
         ui->arrayView->setItem(0, _size, x);
+        ui->arrayView_steps->setColumnCount(_size + 1);
+        ui->arrayView_steps->setItem(0, _size, x2);
     }
 
     void AddElementToArr(double value) {
         QTableWidgetItem *x = new QTableWidgetItem(QString::number(value, 'f', 3));
+        QTableWidgetItem *x2 = new QTableWidgetItem(QString::number(value, 'f', 3));
 
         int _size { ui->arrayView->columnCount() };
         ui->arrayView->setColumnCount(_size + 1);
         ui->arrayView->setItem(0, _size, x);
+        ui->arrayView_steps->setColumnCount(_size + 1);
+        ui->arrayView_steps->setItem(0, _size, x2);
     }
 
     void DeleteElements() {
         ui->arrayView->removeRow(0);
         ui->arrayView->setColumnCount(0);
+
+        ui->arrayView_steps->removeRow(0);
+        ui->arrayView_steps->setColumnCount(0);
     }
 
     void getSize() {
@@ -87,6 +101,7 @@ private:
         DeleteElements();
         intArray.clear();
         doubleArray.clear();
+        curPos = 0;
 
         ShowSize();
     }
@@ -102,6 +117,7 @@ private:
                 AddElementToArr(intArray[i]);
             }
         }
+        curPos = 0;
     }
 
     void fillDoubleArray() {
@@ -116,6 +132,7 @@ private:
                 AddElementToArr(doubleArray[i]);
             }
         }
+        curPos = 0;
     }
 
     void isSorted() {
@@ -242,6 +259,37 @@ private:
         }
 
 
+    }
+
+    void StepByStepSort() {
+        if(curPos < curSize) {
+            bool isInt {0};
+            int dCurNum = ui->arrayView_steps->item(0, curPos)->text().toInt(&isInt);
+            int jdx {curPos};
+            QString temp = ui->arrayView_steps->item(0, curPos)->text();
+
+            if(isInt) {
+                for(int i = curPos; i < curSize; ++i) {
+                    if(ui->arrayView_steps->item(0, i)->text().toInt() < dCurNum) {
+                        dCurNum = ui->arrayView_steps->item(0, i)->text().toInt();
+                        jdx = i;
+                    }
+                }
+            }
+            else {
+                double fCurNum = ui->arrayView_steps->item(0, curPos)->text().toDouble();
+                for(int i = curPos; i < curSize; ++i) {
+                    if(ui->arrayView_steps->item(0, i)->text().toDouble() < fCurNum) {
+                        fCurNum = ui->arrayView_steps->item(0, i)->text().toDouble();
+                        jdx = i;
+                    }
+                }
+            }
+            ui->arrayView_steps->item(0, curPos)->setText(ui->arrayView_steps->item(0, jdx)->text());
+            ui->arrayView_steps->item(0, jdx)->setText(temp);
+
+            ++curPos;
+        }
     }
 };
 #endif // MAINWINDOW_H
